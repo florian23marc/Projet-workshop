@@ -1,0 +1,34 @@
+security:
+  enable_authenticator_manager: true
+  password_hashers:
+    App\Entity\User: 'auto'
+  providers:
+    app_user_provider:
+      entity:
+        class: App\Entity\User
+        property: email
+
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+
+    main:
+      pattern: ^/
+      lazy: true
+      provider: app_user_provider
+      json_login:
+        check_path: /connexion
+        username_path: email
+        password_path: password
+        require_previous_session: false
+      # fallback form_login if needed for browser form submissions
+      form_login:
+        login_path: /connexion
+        check_path: /connexion
+      logout:
+        path: /deconnexion
+        invalidate_session: true
+
+  access_control:
+    - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

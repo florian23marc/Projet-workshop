@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillSwap — Recherche</title>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .search-bar { display:flex;gap:12px;margin-bottom:24px;align-items:center; }
+    .search-input { flex:1;padding:14px 20px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Satoshi',sans-serif;font-size:1rem;outline:none;transition:all 0.2s; }
+    .search-input:focus { border-color:var(--primary);box-shadow:0 0 0 3px rgba(108,59,255,0.1); }
+    .search-input::placeholder { color:var(--muted); }
+
+    .filters { display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap; }
+    .filter-btn { padding:8px 18px;border:1px solid var(--border);border-radius:50px;background:none;color:var(--muted);font-family:'Satoshi',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
+    .filter-btn:hover,.filter-btn.active { background:rgba(108,59,255,0.12);border-color:rgba(108,59,255,0.3);color:var(--primary); }
+
+    .results-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:16px; }
+    .results-count { font-size:0.9rem;color:var(--muted); }
+    .sort-select { padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Satoshi',sans-serif;font-size:0.85rem;outline:none;cursor:pointer; }
+
+    .results-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px; }
+
+    .student-card { background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;transition:all 0.25s;cursor:pointer; }
+    .student-card:hover { transform:translateY(-2px);border-color:rgba(108,59,255,0.3);box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+    .student-card-header { display:flex;align-items:center;gap:12px;margin-bottom:16px; }
+    .student-card-header .info { flex:1; }
+    .student-card-header h3 { font-size:0.95rem;font-weight:600;margin-bottom:2px; }
+    .student-card-header p { font-size:0.78rem;color:var(--muted); }
+    .match-pct { font-family:'Clash Display',sans-serif;font-size:1.3rem;font-weight:700;color:var(--accent); }
+
+    .card-skills { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px; }
+    .card-skill { padding:4px 10px;border-radius:50px;font-size:0.75rem;font-weight:500; }
+    .skill-offer { background:rgba(0,212,170,0.1);color:var(--accent);border:1px solid rgba(0,212,170,0.2); }
+    .skill-want { background:rgba(255,107,107,0.1);color:var(--secondary);border:1px solid rgba(255,107,107,0.2); }
+
+    .card-meta { display:flex;justify-content:space-between;align-items:center;margin-bottom:14px; }
+    .card-meta span { font-size:0.78rem;color:var(--muted);display:flex;align-items:center;gap:4px; }
+    .card-actions { display:flex;gap:8px; }
+    .card-actions .btn { flex:1;justify-content:center;font-size:0.82rem; }
+
+    .legend { display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap; }
+    .legend-item { display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--muted); }
+    .legend-dot { width:10px;height:10px;border-radius:50%; }
+
+    /* Pagination */
+    .pagination { display:flex;gap:8px;justify-content:center;margin-top:32px; }
+    .page-btn { width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Satoshi',sans-serif;font-size:0.85rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center; }
+    .page-btn.active { background:var(--primary);border-color:var(--primary);color:white; }
+    .page-btn:hover:not(.active) { border-color:var(--primary);color:var(--primary); }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <a href="index.html" class="logo">SkillSwap</a>
+    <span class="nav-section">Principal</span>
+    <a href="dashboard.html" class="nav-item"><span class="icon">🏠</span> Tableau de bord</a>
+    <a href="recherche.html" class="nav-item active"><span class="icon">🔍</span> Rechercher</a>
+    <a href="matching.html" class="nav-item"><span class="icon">✨</span> Mes Matchs <span class="nav-badge">3</span></a>
+    <span class="nav-section">Apprentissage</span>
+    <a href="sessions.html" class="nav-item"><span class="icon">📅</span> Mes Sessions</a>
+    <a href="messages.html" class="nav-item"><span class="icon">💬</span> Messages <span class="nav-badge">5</span></a>
+    <span class="nav-section">Communauté</span>
+    <a href="feed.html" class="nav-item"><span class="icon">📱</span> Feed Social</a>
+    <a href="gamification.html" class="nav-item"><span class="icon">🏆</span> Badges & Points</a>
+    <span class="nav-section">Mon compte</span>
+    <a href="profil.html" class="nav-item"><span class="icon">👤</span> Mon Profil</a>
+    <a href="parametres.html" class="nav-item"><span class="icon">⚙️</span> Paramètres</a>
+    <div class="sidebar-user"><div class="user-avatar">👩‍💻</div><div class="user-info"><strong>Massylia S.</strong><span>DSP Paris</span></div></div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header"><h1>Rechercher 🔍</h1><p>Trouvez l'étudiant parfait pour échanger vos compétences</p></div>
+
+    <!-- SEARCH -->
+    <div class="search-bar">
+      <input type="text" class="search-input" placeholder="🔍  Rechercher une compétence, un nom..." value="Python">
+      <button class="btn btn-primary">Rechercher</button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+      <button class="filter-btn active">🌟 Tous</button>
+      <button class="filter-btn">💻 Tech & Dev</button>
+      <button class="filter-btn">🎨 Design & Créa</button>
+      <button class="filter-btn">🌍 Langues</button>
+      <button class="filter-btn">🎵 Arts & Musique</button>
+      <button class="filter-btn">📊 Business</button>
+      <button class="filter-btn">⚽ Sport</button>
+      <button class="filter-btn">🎓 Académique</button>
+      <button class="filter-btn">✅ Disponible maintenant</button>
+      <button class="filter-btn">⭐ +4.5 étoiles</button>
+    </div>
+
+    <!-- LEGEND -->
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Compétence offerte</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--secondary)"></div>Compétence recherchée</div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-header">
+      <span class="results-count">24 étudiants trouvés pour "Python"</span>
+      <select class="sort-select"><option>Meilleur match</option><option>Mieux notés</option><option>Disponibles maintenant</option><option>Plus récents</option></select>
+    </div>
+
+    <div class="results-grid">
+
+      <!-- CARD 1 -->
+      <div class="student-card">
+        <div class="student-card-header">
+          <div class="avatar-md">👨‍💻</div>
+          <div class="info"><h3>Lucas Martin</h3><p>🏫 DSP Paris · ⭐ 4.8 · 8 sessions</p></div>
+          <div class="match-pct">98%</div>
+        </div>
+        <div class="card-skills">
+          <span class="card-skill skill-offer">✅ React.js</span>
+          <span class="card-skill skill-offer">✅ JavaScript</span>
+          <span class="card-skill skill-want">🔍 Python</span>
+          <span class="card-skill skill-want">🔍 SQL</span>
+        </div>
+        <div class="card-meta">
+          <span>📅 Disponible lundi</span>
+          <span>🕐 En ligne</span>
+        </div>
+        <div class="card-actions">
+          <a href="profil-etudiant.html" class="btn btn-secondary">Voir profil</a>
+          <button class="btn btn-primary">Proposer ✨</button>
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="student-card">
+        <div class="student-card-header">
+          <div class="avatar-md">👩‍🎨</div>
+          <div class="info"><h3>Emma Renard</h3><p>🏫 DSP Paris · ⭐ 4.9 · 15 sessions</p></div>
+          <div class="match-pct">94%</div>
+        </div>
+        <div class="card-skills">
+          <span class="card-skill skill-offer">✅ Figma</span>
+          <span class="card-skill skill-offer">✅ UI/UX</span>
+          <span class="card-skill skill-want">🔍 Python</span>
+          <span class="card-skill skill-want">🔍 Data</span>
+        </div>
+        <div class="card-meta">
+          <span>📅 Disponible mercredi</span>
+          <span>🏫 Campus</span>
+        </div>
+        <div class="card-actions">
+          <a href="profil-etudiant.html" class="btn btn-secondary">Voir profil</a>
+          <button class="btn btn-primary">Proposer ✨</button>
+        </div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="student-card">
+        <div class="student-card-header">
+          <div class="avatar-md">👨‍🎓</div>
+          <div class="info"><h3>Tom Bernard</h3><p>🏫 DSP Paris · ⭐ 4.7 · 6 sessions</p></div>
+          <div class="match-pct">87%</div>
+        </div>
+        <div class="card-skills">
+          <span class="card-skill skill-offer">✅ Anglais</span>
+          <span class="card-skill skill-offer">✅ Marketing</span>
+          <span class="card-skill skill-want">🔍 Python</span>
+        </div>
+        <div class="card-meta">
+          <span>📅 Disponible vendredi</span>
+          <span>🕐 En ligne / Campus</span>
+        </div>
+        <div class="card-actions">
+          <a href="profil-etudiant.html" class="btn btn-secondary">Voir profil</a>
+          <button class="btn btn-primary">Proposer ✨</button>
+        </div>
+      </div>
+
+      <!-- CARD 4 -->
+      <div class="student-card">
+        <div class="student-card-header">
+          <div class="avatar-md">👩‍💻</div>
+          <div class="info"><h3>Léa Dupont</h3><p>🏫 F2i Paris · ⭐ 5.0 · 20 sessions</p></div>
+          <div class="match-pct">82%</div>
+        </div>
+        <div class="card-skills">
+          <span class="card-skill skill-offer">✅ SQL</span>
+          <span class="card-skill skill-offer">✅ Power BI</span>
+          <span class="card-skill skill-want">🔍 Python</span>
+          <span class="card-skill skill-want">🔍 React</span>
+        </div>
+        <div class="card-meta">
+          <span>📅 Disponible mardi</span>
+          <span>🕐 En ligne</span>
+        </div>
+        <div class="card-actions">
+          <a href="profil-etudiant.html" class="btn btn-secondary">Voir profil</a>
+          <button class="btn btn-primary">Proposer ✨</button>
+        </div>
+      </div>
+
+      <!-- CARD 5 -->
+      <div class="student-card">
+        <div class="student-card-header">
+          <div class="avatar-md">👨‍🎵</div>
+          <div class="info"><h3>Rayan Morel</h3><p>🏫 DSP Paris · ⭐ 4.6 · 4 sessions</p></div>
+          <div class="match-pct">76%</div>
+        </div>
+        <div class="card-skills">
+          <span class="card-skill skill-offer">✅ Guitare</span>
+          <span class="card-skill skill-offer">✅ Montage vidéo</span>
+          <span class="card-skill skill-want">🔍 Python</span>
+        </div>
+        <div class="card-meta">
+          <span>📅 Disponible samedi</span>
+          <span>🏫 Campus</span>
+        </div>
+        <div class="card-actions">
+          <a href="profil-etudiant.html" class="btn btn-secondary">Voir profil</a>
+          <button class="btn btn-primary">Proposer ✨</button>
+        </div>
+      </div>
+
+      <!-- CARD 6 -->
+      <div class="student-card">
+        <div class="student-card-header">
+          <div class="avatar-md">👩‍🏫</div>
+          <div class="info"><h3>Clara Simon</h3><p>🏫 F2i Paris · ⭐ 4.9 · 11 sessions</p></div>
+          <div class="match-pct">71%</div>
+        </div>
+        <div class="card-skills">
+          <span class="card-skill skill-offer">✅ Comptabilité</span>
+          <span class="card-skill skill-offer">✅ Excel</span>
+          <span class="card-skill skill-want">🔍 Python</span>
+          <span class="card-skill skill-want">🔍 Figma</span>
+        </div>
+        <div class="card-meta">
+          <span>📅 Disponible jeudi</span>
+          <span>🕐 En ligne</span>
+        </div>
+        <div class="card-actions">
+          <a href="profil-etudiant.html" class="btn btn-secondary">Voir profil</a>
+          <button class="btn btn-primary">Proposer ✨</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+      <button class="page-btn">←</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">4</button>
+      <button class="page-btn">→</button>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

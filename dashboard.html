@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillSwap — Tableau de bord</title>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+    .stat-card .stat-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .stat-card .stat-value { font-family:'Clash Display',sans-serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 2px; }
+    .stat-card .stat-label { font-size: 0.8rem; color: var(--muted); }
+    .stat-card .stat-change { font-size: 0.75rem; color: var(--accent); margin-top: 4px; }
+
+    .content-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
+
+    .section-title { font-family:'Clash Display',sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; }
+
+    .session-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .session-item:last-child { border-bottom: none; }
+    .session-date { background: rgba(108,59,255,0.12); border-radius: 10px; padding: 8px 12px; text-align: center; min-width: 52px; }
+    .session-date .day { font-family:'Clash Display',sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+    .session-date .month { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+    .session-info { flex: 1; }
+    .session-info h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 3px; }
+    .session-info p { font-size: 0.8rem; color: var(--muted); }
+    .session-time { font-size: 0.8rem; color: var(--muted); }
+
+    .match-card { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; transition: all 0.2s; }
+    .match-card:hover { border-color: rgba(108,59,255,0.3); background: rgba(108,59,255,0.04); }
+    .match-info { flex: 1; }
+    .match-info h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 2px; }
+    .match-info p { font-size: 0.78rem; color: var(--muted); }
+    .match-score { font-family:'Clash Display',sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+
+    .activity-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); margin-top: 6px; flex-shrink: 0; }
+    .activity-text { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+    .activity-text strong { color: var(--text); }
+    .activity-time { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
+
+    .skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .welcome-banner { background: linear-gradient(135deg, rgba(108,59,255,0.15), rgba(255,107,107,0.1)); border: 1px solid rgba(108,59,255,0.25); border-radius: 16px; padding: 24px 28px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; }
+    .welcome-banner h2 { font-family:'Clash Display',sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+    .welcome-banner p { color: var(--muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="index.html" class="logo">SkillSwap</a>
+    <span class="nav-section">Principal</span>
+    <a href="dashboard.html" class="nav-item active"><span class="icon">🏠</span> Tableau de bord</a>
+    <a href="recherche.html" class="nav-item"><span class="icon">🔍</span> Rechercher</a>
+    <a href="matching.html" class="nav-item"><span class="icon">✨</span> Mes Matchs <span class="nav-badge">3</span></a>
+    <span class="nav-section">Apprentissage</span>
+    <a href="sessions.html" class="nav-item"><span class="icon">📅</span> Mes Sessions</a>
+    <a href="messages.html" class="nav-item"><span class="icon">💬</span> Messages <span class="nav-badge">5</span></a>
+    <span class="nav-section">Communauté</span>
+    <a href="feed.html" class="nav-item"><span class="icon">📱</span> Feed Social</a>
+    <a href="gamification.html" class="nav-item"><span class="icon">🏆</span> Badges & Points</a>
+    <span class="nav-section">Mon compte</span>
+    <a href="profil.html" class="nav-item"><span class="icon">👤</span> Mon Profil</a>
+    <a href="parametres.html" class="nav-item"><span class="icon">⚙️</span> Paramètres</a>
+    <div class="sidebar-user">
+      <div class="user-avatar">👩‍💻</div>
+      <div class="user-info"><strong>Massylia S.</strong><span>DSP Paris</span></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- WELCOME -->
+    <div class="welcome-banner">
+      <div>
+        <h2>Bonjour Massylia ! 👋</h2>
+        <p>Vous avez 3 nouveaux matchs et 2 sessions cette semaine.</p>
+      </div>
+      <a href="recherche.html" class="btn btn-primary">🔍 Trouver un match</a>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-value">12</div>
+        <div class="stat-label">Sessions réalisées</div>
+        <div class="stat-change">↑ +3 ce mois</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-value">840</div>
+        <div class="stat-label">Points accumulés</div>
+        <div class="stat-change">↑ +120 cette semaine</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✨</div>
+        <div class="stat-value">3</div>
+        <div class="stat-label">Matchs en attente</div>
+        <div class="stat-change" style="color:var(--secondary)">→ À confirmer</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-value">4.9</div>
+        <div class="stat-label">Note moyenne</div>
+        <div class="stat-change">↑ Top 5% des utilisateurs</div>
+      </div>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="content-grid">
+
+      <!-- LEFT -->
+      <div>
+        <!-- SESSIONS -->
+        <div class="card mb-24">
+          <div class="flex-between mb-16">
+            <h3 class="section-title" style="margin-bottom:0">Sessions à venir</h3>
+            <a href="sessions.html" class="btn btn-secondary btn-sm">Voir tout</a>
+          </div>
+          <div class="session-item">
+            <div class="session-date"><div class="day">03</div><div class="month">Juin</div></div>
+            <div class="session-info">
+              <h4>Session Python — avec Lucas M.</h4>
+              <p>Niveau débutant · 1h · En ligne</p>
+            </div>
+            <div class="session-time">14h00</div>
+          </div>
+          <div class="session-item">
+            <div class="session-date"><div class="day">05</div><div class="month">Juin</div></div>
+            <div class="session-info">
+              <h4>Atelier Figma — avec Emma R.</h4>
+              <p>Niveau intermédiaire · 2h · Campus</p>
+            </div>
+            <div class="session-time">10h00</div>
+          </div>
+          <div class="session-item">
+            <div class="session-date"><div class="day">08</div><div class="month">Juin</div></div>
+            <div class="session-info">
+              <h4>Cours Anglais — avec Tom B.</h4>
+              <p>Niveau avancé · 1h30 · En ligne</p>
+            </div>
+            <div class="session-time">16h30</div>
+          </div>
+        </div>
+
+        <!-- MES COMPETENCES -->
+        <div class="card mb-24">
+          <div class="flex-between mb-16">
+            <h3 class="section-title" style="margin-bottom:0">Mes compétences</h3>
+            <a href="profil.html" class="btn btn-secondary btn-sm">Modifier</a>
+          </div>
+          <div style="margin-bottom:16px">
+            <div class="flex-between mb-8"><span style="font-size:0.85rem">Python</span><span class="badge badge-success">Expert</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
+          </div>
+          <div style="margin-bottom:16px">
+            <div class="flex-between mb-8"><span style="font-size:0.85rem">Design Figma</span><span class="badge badge-primary">Intermédiaire</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
+          </div>
+          <div>
+            <div class="flex-between mb-8"><span style="font-size:0.85rem">Anglais</span><span class="badge badge-warning">Courant</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+          </div>
+        </div>
+
+        <!-- ACTIVITE -->
+        <div class="card">
+          <h3 class="section-title">Activité récente</h3>
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div><div class="activity-text"><strong>Lucas M.</strong> vous a demandé une session Python</div><div class="activity-time">Il y a 2h</div></div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--accent)"></div>
+            <div><div class="activity-text">Vous avez gagné le badge <strong>🎯 Premier Échange</strong></div><div class="activity-time">Il y a 5h</div></div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:var(--secondary)"></div>
+            <div><div class="activity-text"><strong>Emma R.</strong> a laissé un avis 5⭐ sur votre session</div><div class="activity-time">Hier</div></div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div><div class="activity-text">Votre profil a été consulté <strong>12 fois</strong> cette semaine</div><div class="activity-time">Il y a 2 jours</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div>
+        <!-- MATCHS -->
+        <div class="card mb-24">
+          <div class="flex-between mb-16">
+            <h3 class="section-title" style="margin-bottom:0">Nouveaux matchs ✨</h3>
+            <a href="matching.html" class="btn btn-secondary btn-sm">Voir tout</a>
+          </div>
+          <div class="match-card">
+            <div class="avatar-sm">👨‍💻</div>
+            <div class="match-info"><h4>Lucas M.</h4><p>Cherche Python · Offre React</p></div>
+            <div class="match-score">98%</div>
+          </div>
+          <div class="match-card">
+            <div class="avatar-sm">👩‍🎨</div>
+            <div class="match-info"><h4>Emma R.</h4><p>Cherche Anglais · Offre Figma</p></div>
+            <div class="match-score">94%</div>
+          </div>
+          <div class="match-card">
+            <div class="avatar-sm">👨‍🎓</div>
+            <div class="match-info"><h4>Tom B.</h4><p>Cherche Data · Offre Anglais</p></div>
+            <div class="match-score">87%</div>
+          </div>
+          <a href="matching.html" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px">Voir mes matchs →</a>
+        </div>
+
+        <!-- BADGES -->
+        <div class="card mb-24">
+          <h3 class="section-title">Mes badges récents 🏆</h3>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">
+            <div style="text-align:center;padding:12px;background:rgba(255,255,255,0.03);border-radius:10px">
+              <div style="font-size:1.8rem;margin-bottom:4px">🎯</div>
+              <div style="font-size:0.7rem;color:var(--muted)">Premier Échange</div>
+            </div>
+            <div style="text-align:center;padding:12px;background:rgba(255,255,255,0.03);border-radius:10px">
+              <div style="font-size:1.8rem;margin-bottom:4px">⭐</div>
+              <div style="font-size:0.7rem;color:var(--muted)">Top Rated</div>
+            </div>
+            <div style="text-align:center;padding:12px;background:rgba(255,255,255,0.03);border-radius:10px">
+              <div style="font-size:1.8rem;margin-bottom:4px">🔥</div>
+              <div style="font-size:0.7rem;color:var(--muted)">Série de 5</div>
+            </div>
+          </div>
+          <a href="gamification.html" class="btn btn-secondary" style="width:100%;justify-content:center">Voir tous mes badges</a>
+        </div>
+
+        <!-- PROGRESSION -->
+        <div class="card">
+          <h3 class="section-title">Ma progression</h3>
+          <div style="text-align:center;margin-bottom:16px">
+            <div style="font-family:'Clash Display',sans-serif;font-size:2rem;font-weight:700;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Niveau 7</div>
+            <div style="font-size:0.85rem;color:var(--muted)">840 / 1000 pts pour le niveau 8</div>
+          </div>
+          <div class="progress-bar" style="height:10px;margin-bottom:12px">
+            <div class="progress-fill" style="width:84%"></div>
+          </div>
+          <div style="font-size:0.8rem;color:var(--muted);text-align:center">Plus que 160 points pour débloquer le badge <strong style="color:var(--text)">🌟 Expert</strong></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

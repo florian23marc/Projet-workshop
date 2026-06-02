@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillSwap — Échangez vos compétences</title>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6C3BFF;
+      --secondary: #FF6B6B;
+      --accent: #00D4AA;
+      --dark: #0A0A0F;
+      --dark2: #12121A;
+      --card: #1A1A2E;
+      --border: rgba(255,255,255,0.08);
+      --text: #E8E8F0;
+      --muted: #8888AA;
+      --gradient: linear-gradient(135deg, #6C3BFF 0%, #FF6B6B 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Satoshi', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* NAVBAR */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 60px;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-ghost {
+      padding: 10px 24px;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-primary {
+      padding: 10px 24px;
+      background: var(--gradient);
+      border-radius: 50px;
+      color: white;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(108,59,255,0.4);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 60px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(108,59,255,0.15) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,107,107,0.1) 0%, transparent 70%);
+      top: 20%; right: 10%;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      background: rgba(108,59,255,0.15);
+      border: 1px solid rgba(108,59,255,0.3);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      color: #A889FF;
+      margin-bottom: 32px;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .hero-badge span { font-size: 1rem; }
+
+    .hero h1 {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 700;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.8s ease 0.1s both;
+    }
+
+    .hero h1 .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease 0.3s both;
+    }
+
+    .btn-large {
+      padding: 16px 40px;
+      font-size: 1rem;
+      border-radius: 50px;
+    }
+
+    .btn-outline {
+      padding: 16px 40px;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* STATS */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      padding: 60px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-number {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* FEATURES */
+    .features {
+      padding: 100px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 60px;
+      max-width: 500px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(108,59,255,0.3);
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* HOW IT WORKS */
+    .how-it-works {
+      padding: 100px 60px;
+      background: var(--dark2);
+    }
+
+    .how-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      margin-top: 60px;
+      position: relative;
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Clash Display', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step h3 {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* CTA SECTION */
+    .cta-section {
+      padding: 100px 60px;
+      text-align: center;
+    }
+
+    .cta-card {
+      max-width: 700px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, rgba(108,59,255,0.15), rgba(255,107,107,0.1));
+      border: 1px solid rgba(108,59,255,0.3);
+      border-radius: 32px;
+      padding: 80px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-card h2 {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .cta-card p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 40px 60px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    footer p { color: var(--muted); font-size: 0.9rem; }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    /* ANIMATIONS */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* FLOATING TAGS */
+    .floating-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 48px;
+      animation: fadeInUp 0.8s ease 0.4s both;
+    }
+
+    .tag {
+      padding: 8px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: all 0.3s;
+    }
+
+    .tag:hover {
+      background: rgba(108,59,255,0.1);
+      border-color: rgba(108,59,255,0.3);
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">SkillSwap</div>
+    <ul class="nav-links">
+      <li><a href="#">Fonctionnalités</a></li>
+      <li><a href="#">Comment ça marche</a></li>
+      <li><a href="#">Communauté</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="connexion.html" class="btn-ghost">Se connecter</a>
+      <a href="inscription.html" class="btn-primary">S'inscrire</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <div class="hero-badge">
+        <span>✨</span> La plateforme d'échange de compétences entre étudiants
+      </div>
+      <h1>
+        Apprenez ensemble,<br>
+        <span class="gradient-text">progressez plus vite</span>
+      </h1>
+      <p>SkillSwap connecte les étudiants par leurs compétences. Échangez vos savoirs, organisez des sessions d'apprentissage et valorisez votre expertise.</p>
+      <div class="hero-cta">
+        <a href="inscription.html" class="btn-primary btn-large">Commencer gratuitement →</a>
+        <a href="#how" class="btn-outline">▶ Voir comment ça marche</a>
+      </div>
+      <div class="floating-tags">
+        <span class="tag">🎨 Design</span>
+        <span class="tag">💻 Développement</span>
+        <span class="tag">🌍 Langues</span>
+        <span class="tag">🎵 Musique</span>
+        <span class="tag">📊 Comptabilité</span>
+        <span class="tag">🎬 Montage vidéo</span>
+        <span class="tag">⚽ Sport</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-number">2 400+</div>
+      <div class="stat-label">Étudiants inscrits</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">180+</div>
+      <div class="stat-label">Compétences disponibles</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">5 800+</div>
+      <div class="stat-label">Sessions réalisées</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">98%</div>
+      <div class="stat-label">Taux de satisfaction</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <p class="section-label">Fonctionnalités</p>
+    <h2 class="section-title">Tout ce dont vous avez besoin pour apprendre</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(108,59,255,0.15)">🔍</div>
+        <h3>Système de Matching</h3>
+        <p>Trouvez instantanément l'étudiant parfait pour apprendre ou enseigner une compétence grâce à notre algorithme intelligent.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(255,107,107,0.15)">📅</div>
+        <h3>Gestion des Sessions</h3>
+        <p>Planifiez des ateliers, cours rapides ou clubs thématiques directement depuis la plateforme en quelques clics.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(0,212,170,0.15)">🏆</div>
+        <h3>Gamification</h3>
+        <p>Gagnez des badges, accumulez des points et relevez des défis pour valoriser votre progression et votre engagement.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(255,193,7,0.15)">💬</div>
+        <h3>Feed Social</h3>
+        <p>Partagez vos réalisations, donnez des recommandations et recevez des feedbacks de vos pairs.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(108,59,255,0.15)">👤</div>
+        <h3>Profil Étudiant</h3>
+        <p>Créez votre profil avec vos compétences, niveaux et disponibilités pour être trouvé facilement par vos pairs.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(255,107,107,0.15)">🔒</div>
+        <h3>Réseau de Confiance</h3>
+        <p>Une communauté fermée réservée aux étudiants de votre établissement pour des échanges sûrs et de qualité.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" id="how">
+    <div class="how-inner">
+      <p class="section-label">Comment ça marche</p>
+      <h2 class="section-title">Simple, rapide et efficace</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Créez votre profil</h3>
+          <p>Inscrivez-vous et ajoutez vos compétences avec vos niveaux et disponibilités.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Trouvez un match</h3>
+          <p>Recherchez un étudiant qui maîtrise ce que vous voulez apprendre.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Planifiez une session</h3>
+          <p>Organisez un atelier ou un cours rapide selon vos disponibilités mutuelles.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Progressez ensemble</h3>
+          <p>Apprenez, partagez et gagnez des badges en valorisant vos expertises.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-card">
+      <h2>Prêt à échanger vos compétences ?</h2>
+      <p>Rejoignez des milliers d'étudiants qui apprennent ensemble chaque jour.</p>
+      <a href="inscription.html" class="btn-primary btn-large">Créer mon compte gratuitement</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="logo">SkillSwap</div>
+    <p>© 2026 SkillSwap — DSP Digital School of Paris</p>
+    <div class="footer-links">
+      <a href="#">Mentions légales</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">CGU</a>
+    </div>
+  </footer>
+
+</body>
+</html>
