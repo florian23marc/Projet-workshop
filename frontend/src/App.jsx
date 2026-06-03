@@ -33,6 +33,7 @@ export default function App() {
           <Link to="/dashboard">Dashboard</Link>
           <Link to="/sessions">Sessions</Link>
           <Link to="/connexion">Se connecter</Link>
+          <Link to="/inscription">S'inscrire</Link>
         </div>
         <button className="theme-toggle" onClick={toggleTheme}>
           {theme === 'dark' ? 'Light mode' : 'Dark mode'}
