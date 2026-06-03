@@ -7,6 +7,7 @@ export default function Sessions(){
   const [inviteEmails,setInviteEmails] = useState({})
   const [message,setMessage] = useState('')
   const [activeTab,setActiveTab] = useState('upcoming')
+  const [view,setView] = useState('history')
 
   useEffect(()=>{ load(); },[])
 
@@ -56,6 +57,15 @@ export default function Sessions(){
   const upcoming = allSessions.filter(session => parseDate(session) >= now)
   const past = allSessions.filter(session => parseDate(session) < now)
 
+  const groupedCalendar = allSessions.reduce((acc, session) => {
+    const date = parseDate(session)
+    const day = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'short' })
+    if (!acc[day]) acc[day] = []
+    acc[day].push(session)
+    return acc
+  }, {})
+
+  const calendarDays = Object.entries(groupedCalendar)
   const currentSessions = activeTab === 'upcoming' ? upcoming : past
 
   return (
@@ -63,12 +73,14 @@ export default function Sessions(){
       <div className="sessions-header">
         <div>
           <p className="hero-badge">📅 Sessions de la communauté</p>
-          <h1>Organisez, rejoignez et collaborez facilement</h1>
-          <p className="lead">Retrouvez des sessions actives, invitez des pairs, et gérez vos rendez-vous d'apprentissage dans un espace clair et moderne.</p>
+          <h1>Gère tes séances avec clarté</h1>
+          <p className="lead">Retrouve tes sessions passées ou à venir et bascule vers un calendrier intuitif pour planifier tes prochains échanges.</p>
         </div>
         <div className="sessions-header-actions">
           <button type="button" className="btn-primary">Créer une session</button>
-          <button type="button" className="btn-secondary">Voir le calendrier</button>
+          <button type="button" className="btn-secondary" onClick={() => setView(view === 'calendar' ? 'history' : 'calendar')}>
+            {view === 'calendar' ? 'Retour à la liste' : 'Voir le calendrier'}
+          </button>
         </div>
       </div>
 
@@ -91,43 +103,68 @@ export default function Sessions(){
         <section className="sessions-panel">
           <div className="section-title-row">
             <div>
-              <h2>Historique de séances</h2>
-              <span className="section-caption">Consulte les séances déjà passées et celles à venir.</span>
+              <h2>{view === 'calendar' ? 'Calendrier des séances' : 'Historique de séances'}</h2>
+              <span className="section-caption">
+                {view === 'calendar'
+                  ? 'Visualise tes sessions organisées par date pour mieux planifier.'
+                  : 'Consulte facilement les séances à venir et celles déjà réalisées.'}
+              </span>
             </div>
-            <div className="sessions-tabs">
-              <button className={activeTab === 'upcoming' ? 'active' : ''} onClick={() => setActiveTab('upcoming')}>À venir</button>
-              <button className={activeTab === 'past' ? 'active' : ''} onClick={() => setActiveTab('past')}>Passées</button>
-            </div>
-          </div>
-
-          <div className="sessions-list">
-            {currentSessions.length ? currentSessions.map(session => (
-              <article key={session.id} className="session-card">
-                <div className="session-card-top">
-                  <div>
-                    <h3>{session.title}</h3>
-                    <div className="session-meta">{session.when} · Organisé par <strong>{session.organizer}</strong></div>
-                  </div>
-                  <div className="session-badge">{session.participants}</div>
-                </div>
-
-                <div className="session-tags">
-                  {(session.tags || []).map(tag => <span key={tag}>{tag}</span>)}
-                </div>
-
-                <div className="session-actions">
-                  {activeTab === 'upcoming'
-                    ? <button type="button" className="btn-primary">Rejoindre</button>
-                    : <button type="button" className="btn-secondary">Voir le compte-rendu</button>}
-                  <button type="button" className="btn-secondary">Détails</button>
-                </div>
-              </article>
-            )) : (
-              <div className="session-empty">
-                {activeTab === 'upcoming' ? 'Aucune séance à venir pour le moment.' : 'Aucune séance passée n’est disponible.'}
+            {view !== 'calendar' && (
+              <div className="sessions-tabs">
+                <button className={activeTab === 'upcoming' ? 'active' : ''} onClick={() => setActiveTab('upcoming')}>À venir</button>
+                <button className={activeTab === 'past' ? 'active' : ''} onClick={() => setActiveTab('past')}>Passées</button>
               </div>
             )}
           </div>
+
+          {view === 'calendar' ? (
+            <div className="sessions-calendar">
+              {calendarDays.map(([day, sessionsForDay]) => (
+                <div className="calendar-day-card" key={day}>
+                  <h3>{day}</h3>
+                  <div className="calendar-sessions">
+                    {sessionsForDay.map(session => (
+                      <div key={session.id} className="calendar-session-card">
+                        <strong>{session.title}</strong>
+                        <span>{session.when}</span>
+                        <span>Organisé par {session.organizer}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="sessions-list">
+              {currentSessions.length ? currentSessions.map(session => (
+                <article key={session.id} className="session-card">
+                  <div className="session-card-top">
+                    <div>
+                      <h3>{session.title}</h3>
+                      <div className="session-meta">{session.when} · Organisé par <strong>{session.organizer}</strong></div>
+                    </div>
+                    <div className="session-badge">{session.participants}</div>
+                  </div>
+
+                  <div className="session-tags">
+                    {(session.tags || []).map(tag => <span key={tag}>{tag}</span>)}
+                  </div>
+
+                  <div className="session-actions">
+                    {activeTab === 'upcoming'
+                      ? <button type="button" className="btn-primary">Rejoindre</button>
+                      : <button type="button" className="btn-secondary">Voir le compte-rendu</button>}
+                    <button type="button" className="btn-secondary">Détails</button>
+                  </div>
+                </article>
+              )) : (
+                <div className="session-empty">
+                  {activeTab === 'upcoming' ? 'Aucune séance à venir pour le moment.' : 'Aucune séance passée n’est disponible.'}
+                </div>
+              )}
+            </div>
+          )}
         </section>
 
         <aside className="sessions-aside">
