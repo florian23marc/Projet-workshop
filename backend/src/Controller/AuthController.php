@@ -28,6 +28,10 @@ class AuthController extends AbstractController
             return $this->json(['error' => 'password must contain at least 6 characters'], 400);
         }
 
+        if (!str_ends_with($email, '@etu-digitalschool.paris')) {
+            return $this->json(['error' => 'Only @etu-digitalschool.paris email addresses are allowed'], 403);
+        }
+
         $existing = $em->getRepository(User::class)->findOneBy(['email' => $email]);
         if ($existing) {
             return $this->json(['error' => 'email already used'], 409);
