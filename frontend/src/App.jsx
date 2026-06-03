@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard'
 import Matching from './pages/Matching'
 import Search from './pages/Search'
 import Sessions from './pages/Sessions'
+import ProtectedRoute from './components/ProtectedRoute'
 
 export default function App() {
   const [theme, setTheme] = useState(() => {
@@ -34,6 +35,7 @@ export default function App() {
           <Link to="/sessions">Sessions</Link>
           <Link to="/connexion">Se connecter</Link>
           <Link to="/inscription">S'inscrire</Link>
+          <a href="/deconnexion" style={{ color: 'var(--muted)' }}>Déconnexion</a>
         </div>
         <button className="theme-toggle" onClick={toggleTheme}>
           {theme === 'dark' ? 'Light mode' : 'Dark mode'}
@@ -42,10 +44,10 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/recherche" element={<Search />} />
-          <Route path="/matching" element={<Matching />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/sessions" element={<Sessions />} />
+          <Route path="/recherche" element={<ProtectedRoute><Search /></ProtectedRoute>} />
+          <Route path="/matching" element={<ProtectedRoute><Matching /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/sessions" element={<ProtectedRoute><Sessions /></ProtectedRoute>} />
           <Route path="/connexion" element={<Login />} />
           <Route path="/inscription" element={<Register />} />
         </Routes>
