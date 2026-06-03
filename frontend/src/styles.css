@@ -85,6 +85,12 @@ body{font-family:'Satoshi',Inter,Arial,sans-serif;background:var(--background);c
 .pill{display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;font-size:0.85rem;background:rgba(255,255,255,0.08);color:var(--text);border:1px solid rgba(255,255,255,0.12)}
 .pill-primary{background:rgba(0,212,170,0.14);color:var(--text);border-color:rgba(0,212,170,0.25)}
 .pill-secondary{background:rgba(255,107,107,0.14);color:var(--text);border-color:rgba(255,107,107,0.25)}
+.match-role-card{display:flex;flex-direction:column;gap:8px;width:240px;padding:18px;border-radius:18px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:var(--text)}
+.match-role-title{font-weight:700;font-size:0.95rem}
+.match-role-note{color:var(--muted);line-height:1.5;font-size:0.95rem}
+.match-view-toggle{display:flex;gap:12px;margin:20px 0}
+.match-view-toggle button{padding:12px 18px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;transition:all .2s ease}
+.match-view-toggle button.active{background:var(--surface);border-color:var(--primary);color:var(--text);box-shadow:0 10px 30px rgba(108,59,255,0.08)}
 .match-score-card{text-align:center}
 .match-score-circle{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid var(--accent);margin:0 auto 14px;background:var(--surface)}
 .match-actions{display:flex;flex-direction:column;gap:10px}
