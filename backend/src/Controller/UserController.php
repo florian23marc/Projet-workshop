@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Skill;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,7 +15,7 @@ class UserController extends AbstractController
     public function getProfile(): Response
     {
         $user = $this->getUser();
-        if (!$user) return $this->json(['error' => 'unauthenticated'], 401);
+        if (!$user instanceof User) return $this->json(['error' => 'unauthenticated'], 401);
         $skills = [];
         foreach ($user->getSkills() as $s) $skills[] = $s->getName();
         return $this->json([
@@ -30,7 +31,7 @@ class UserController extends AbstractController
     public function updateProfile(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        if (!$user) return $this->json(['error' => 'unauthenticated'], 401);
+        if (!$user instanceof User) return $this->json(['error' => 'unauthenticated'], 401);
         $data = json_decode($request->getContent(), true);
         if (isset($data['firstName'])) $user->setFirstName($data['firstName']);
         if (isset($data['lastName'])) $user->setLastName($data['lastName']);
@@ -47,6 +48,18 @@ class UserController extends AbstractController
         }
         $em->persist($user);
         $em->flush();
-        return $this->json(['ok' => true]);
+
+        $skills = [];
+        foreach ($user->getSkills() as $skill) {
+            $skills[] = ['name' => $skill->getName()];
+        }
+
+        return $this->json([
+            'ok' => true,
+            'email' => $user->getUserIdentifier(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'skills' => $skills,
+        ]);
     }
 }
