@@ -24,6 +24,7 @@ security:
         require_previous_session: false
       logout:
         path: /deconnexion
+        target: /connexion
         invalidate_session: true
 
   access_control:

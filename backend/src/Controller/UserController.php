@@ -16,14 +16,24 @@ class UserController extends AbstractController
     {
         $user = $this->getUser();
         if (!$user instanceof User) return $this->json(['error' => 'unauthenticated'], 401);
+
         $skills = [];
         foreach ($user->getSkills() as $s) $skills[] = $s->getName();
+
+        $teachSkills = [];
+        foreach ($user->getTeachSkills() as $s) $teachSkills[] = $s->getName();
+
+        $learnSkills = [];
+        foreach ($user->getLearnSkills() as $s) $learnSkills[] = $s->getName();
+
         return $this->json([
             'email' => $user->getUserIdentifier(),
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
             'roles' => $user->getRoles(),
             'skills' => $skills,
+            'teachSkills' => $teachSkills,
+            'learnSkills' => $learnSkills,
         ]);
     }
 
@@ -32,13 +42,14 @@ class UserController extends AbstractController
     {
         $user = $this->getUser();
         if (!$user instanceof User) return $this->json(['error' => 'unauthenticated'], 401);
+
         $data = json_decode($request->getContent(), true);
+        $skillRepo = $em->getRepository(Skill::class);
+
         if (isset($data['firstName'])) $user->setFirstName($data['firstName']);
         if (isset($data['lastName'])) $user->setLastName($data['lastName']);
+
         if (isset($data['skills']) && is_array($data['skills'])) {
-            // sync skills: find or create skills by name
-            $skillRepo = $em->getRepository(Skill::class);
-            // remove all existing
             foreach ($user->getSkills() as $s) $user->removeSkill($s);
             foreach ($data['skills'] as $name) {
                 $s = $skillRepo->findOneBy(['name' => $name]);
@@ -46,13 +57,36 @@ class UserController extends AbstractController
                 $user->addSkill($s);
             }
         }
+
+        if (isset($data['teachSkills']) && is_array($data['teachSkills'])) {
+            foreach ($user->getTeachSkills() as $s) $user->removeTeachSkill($s);
+            foreach ($data['teachSkills'] as $name) {
+                $s = $skillRepo->findOneBy(['name' => $name]);
+                if (!$s) { $s = new Skill(); $s->setName($name); $em->persist($s); }
+                $user->addTeachSkill($s);
+            }
+        }
+
+        if (isset($data['learnSkills']) && is_array($data['learnSkills'])) {
+            foreach ($user->getLearnSkills() as $s) $user->removeLearnSkill($s);
+            foreach ($data['learnSkills'] as $name) {
+                $s = $skillRepo->findOneBy(['name' => $name]);
+                if (!$s) { $s = new Skill(); $s->setName($name); $em->persist($s); }
+                $user->addLearnSkill($s);
+            }
+        }
+
         $em->persist($user);
         $em->flush();
 
         $skills = [];
-        foreach ($user->getSkills() as $skill) {
-            $skills[] = ['name' => $skill->getName()];
-        }
+        foreach ($user->getSkills() as $skill) $skills[] = ['name' => $skill->getName()];
+
+        $teachSkills = [];
+        foreach ($user->getTeachSkills() as $s) $teachSkills[] = $s->getName();
+
+        $learnSkills = [];
+        foreach ($user->getLearnSkills() as $s) $learnSkills[] = $s->getName();
 
         return $this->json([
             'ok' => true,
@@ -60,6 +94,8 @@ class UserController extends AbstractController
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
             'skills' => $skills,
+            'teachSkills' => $teachSkills,
+            'learnSkills' => $learnSkills,
         ]);
     }
 }
