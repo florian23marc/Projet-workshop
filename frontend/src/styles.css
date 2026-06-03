@@ -39,6 +39,10 @@ body{font-family:'Satoshi',Inter,Arial,sans-serif;background:var(--background);c
 .sessions-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
 .sessions-header .hero-badge{margin-bottom:10px}
 .sessions-header-actions{display:flex;gap:12px;flex-wrap:wrap;}
+.sessions-tabs{display:flex;gap:10px;margin-top:18px}
+.sessions-tabs button{padding:10px 16px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;transition:all .2s ease}
+.sessions-tabs button.active{background:var(--surface);border-color:var(--primary);color:var(--text);box-shadow:0 12px 30px rgba(108,59,255,0.08)}
+.session-empty{padding:28px;border-radius:18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);color:var(--muted);text-align:center}
 .sessions-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
 .section-title-row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:20px}
 .section-caption{color:var(--muted);font-size:0.95rem}

@@ -6,6 +6,7 @@ export default function Sessions(){
   const [invitations,setInvitations] = useState([])
   const [inviteEmails,setInviteEmails] = useState({})
   const [message,setMessage] = useState('')
+  const [activeTab,setActiveTab] = useState('upcoming')
 
   useEffect(()=>{ load(); },[])
 
@@ -42,6 +43,21 @@ export default function Sessions(){
     else { setMessage('Impossible de répondre'); console.error(await res.text()) }
   }
 
+  const sampleSessions = [
+    { id:'s1', title:'Atelier React - Hooks & State', whenDate: new Date(Date.now()+3600*1000).toISOString(), when: new Date(Date.now()+3600*1000).toLocaleString(), organizer:'Léa Dupont', participants:'3/8', tags:['React','Hooks','Frontend'] },
+    { id:'s2', title:'Introduction à Symfony', whenDate: new Date(Date.now()+86400*1000).toISOString(), when: new Date(Date.now()+86400*1000).toLocaleString(), organizer:'Maxime Leroy', participants:'5/12', tags:['Symfony','API','Backend'] },
+    { id:'s3', title:'Data Science pour débutants', whenDate: new Date(Date.now()-86400*1000).toISOString(), when: new Date(Date.now()-86400*1000).toLocaleString(), organizer:'Sofia Martin', participants:'4/10', tags:['Python','Data','ML'] },
+    { id:'s4', title:'Atelier UI/UX en duo', whenDate: new Date(Date.now()-3600*1000).toISOString(), when: new Date(Date.now()-3600*1000).toLocaleString(), organizer:'Camille R.', participants:'6/10', tags:['UI/UX','Design','Figma'] }
+  ]
+
+  const allSessions = sessions.length ? sessions : sampleSessions
+  const now = new Date()
+  const parseDate = (session) => new Date(session.whenDate || session.when)
+  const upcoming = allSessions.filter(session => parseDate(session) >= now)
+  const past = allSessions.filter(session => parseDate(session) < now)
+
+  const currentSessions = activeTab === 'upcoming' ? upcoming : past
+
   return (
     <div className="sessions-page">
       <div className="sessions-header">
@@ -58,32 +74,34 @@ export default function Sessions(){
 
       <div className="sessions-stats">
         <div className="stat-card">
-          <div className="stat-value">12</div>
-          <div className="stat-label">Sessions actives</div>
+          <div className="stat-value">{upcoming.length}</div>
+          <div className="stat-label">Séances à venir</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value">5</div>
-          <div className="stat-label">Organisateurs</div>
+          <div className="stat-value">{past.length}</div>
+          <div className="stat-label">Séances passées</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value">24</div>
-          <div className="stat-label">Invitations envoyées</div>
+          <div className="stat-value">{invitations.length || 1}</div>
+          <div className="stat-label">Invitations</div>
         </div>
       </div>
 
       <div className="sessions-layout">
         <section className="sessions-panel">
           <div className="section-title-row">
-            <h2>Sessions disponibles</h2>
-            <span className="section-caption">Trouve la session qui te convient.</span>
+            <div>
+              <h2>Historique de séances</h2>
+              <span className="section-caption">Consulte les séances déjà passées et celles à venir.</span>
+            </div>
+            <div className="sessions-tabs">
+              <button className={activeTab === 'upcoming' ? 'active' : ''} onClick={() => setActiveTab('upcoming')}>À venir</button>
+              <button className={activeTab === 'past' ? 'active' : ''} onClick={() => setActiveTab('past')}>Passées</button>
+            </div>
           </div>
 
           <div className="sessions-list">
-            {(sessions.length ? sessions : [
-              { id:'s1', title:'Atelier React - Hooks & State', when: new Date(Date.now()+3600*1000).toLocaleString(), organizer:'Léa Dupont', participants:'3/8', tags:['React','Hooks','Frontend'] },
-              { id:'s2', title:'Introduction à Symfony', when: new Date(Date.now()+86400*1000).toLocaleString(), organizer:'Maxime Leroy', participants:'5/12', tags:['Symfony','API','Backend'] },
-              { id:'s3', title:'Data Science pour débutants', when: new Date(Date.now()+172800*1000).toLocaleString(), organizer:'Sofia Martin', participants:'4/10', tags:['Python','Data','ML'] }
-            ]).map(session => (
+            {currentSessions.length ? currentSessions.map(session => (
               <article key={session.id} className="session-card">
                 <div className="session-card-top">
                   <div>
@@ -98,11 +116,17 @@ export default function Sessions(){
                 </div>
 
                 <div className="session-actions">
-                  <button type="button" className="btn-primary">Rejoindre</button>
+                  {activeTab === 'upcoming'
+                    ? <button type="button" className="btn-primary">Rejoindre</button>
+                    : <button type="button" className="btn-secondary">Voir le compte-rendu</button>}
                   <button type="button" className="btn-secondary">Détails</button>
                 </div>
               </article>
-            ))}
+            )) : (
+              <div className="session-empty">
+                {activeTab === 'upcoming' ? 'Aucune séance à venir pour le moment.' : 'Aucune séance passée n’est disponible.'}
+              </div>
+            )}
           </div>
         </section>
 
