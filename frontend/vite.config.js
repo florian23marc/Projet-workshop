@@ -6,9 +6,10 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      '/api': 'http://127.0.0.1:8001',
-      '/inscription': 'http://127.0.0.1:8001',
-      '/connexion': 'http://127.0.0.1:8001'
+      '/api': 'http://127.0.0.1:8000',
+      '/inscription': 'http://127.0.0.1:8000',
+      '/connexion': 'http://127.0.0.1:8000',
+      '/deconnexion': 'http://127.0.0.1:8000'
     }
   }
 })

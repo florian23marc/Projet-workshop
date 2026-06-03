@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,6 +12,27 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AuthController extends AbstractController
 {
+    #[Route('/connexion', name: 'connexion', methods: ['POST'])]
+    public function login(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher, Security $security): Response
+    {
+        $data = json_decode($request->getContent(), true) ?: [];
+        $email = trim(strtolower($data['email'] ?? ''));
+        $password = (string)($data['password'] ?? '');
+
+        if (!$email || !$password) {
+            return $this->json(['error' => 'email/password required'], 400);
+        }
+
+        $user = $em->getRepository(User::class)->findOneBy(['email' => $email]);
+        if (!$user || !$hasher->isPasswordValid($user, $password)) {
+            return $this->json(['error' => 'Invalid credentials'], 401);
+        }
+
+        $security->login($user, 'json_login');
+
+        return $this->json(['ok' => true, 'email' => $user->getEmail()]);
+    }
+
     #[Route('/inscription', name: 'inscription', methods: ['POST'])]
     public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
     {
