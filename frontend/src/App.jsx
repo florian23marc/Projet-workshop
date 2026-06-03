@@ -26,6 +26,9 @@ export default function App() {
   return (
     <div>
       <nav className="topnav">
+        <Link to="/" className="nav-logo">
+          <img src="/logo.svg" alt="SkillSwap logo" />
+        </Link>
         <div className="topnav-links">
           <Link to="/">Home</Link>
           <Link to="/recherche">Rechercher</Link>
