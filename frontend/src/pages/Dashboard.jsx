@@ -8,14 +8,18 @@ export default function Dashboard(){
   const [newSessionOpen,setNewSessionOpen] = useState(false)
   const [sessionForm,setSessionForm] = useState({ title:'', startAt:'', durationMinutes:60, location:'', capacity:10 })
 
-  useEffect(()=>{ fetch('/api/matches', { credentials: 'include' }).then(r=>r.json()).then(setMatches) },[])
-  useEffect(()=>{ fetch('/api/user', { credentials: 'include' }).then(r=>{ if(r.ok) return r.json(); return null }).then(u=>setUser(u)) },[])
+  useEffect(()=>{ fetch('/api/matches', { credentials: 'include' }).then(r=>r.json()).then(setMatches).catch(()=>setMatches([])) },[])
+  useEffect(()=>{ fetch('/api/user', { credentials: 'include' }).then(r=>{ if(r.ok) return r.json(); return null }).then(u=>setUser(u)).catch(()=>setUser(null)) },[])
 
   function startEdit(){ if(user) setEditing(true) }
   async function saveProfile(){
     if(!user) return
     setSaving(true)
-    const payload = { firstName: user.firstName, lastName: user.lastName, skills: (user.skills||[]).map(s=>s.name) }
+    const payload = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      skills: (user.skills || []).map((s) => typeof s === 'string' ? s : s.name).filter(Boolean)
+    }
     try{
       const res = await fetch('/api/user', { method:'PUT', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) })
       if(res.ok){ const updated = await res.json(); setUser(updated); setEditing(false) }
@@ -47,7 +51,7 @@ export default function Dashboard(){
         <div style={{marginTop:20,borderTop:'1px solid var(--border)',paddingTop:12}}>
           <div style={{display:'flex',gap:12,alignItems:'center'}}>
             <div style={{fontSize:28}}>👩‍💻</div>
-            <div><strong>Massylia S.</strong><div style={{fontSize:12,color:'var(--muted)'}}>DSP Paris</div></div>
+            <div><strong>{user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email || 'Utilisateur'}</strong><div style={{fontSize:12,color:'var(--muted)'}}>{user?.email || 'Connecté'}</div></div>
           </div>
         </div>
       </aside>
@@ -55,8 +59,8 @@ export default function Dashboard(){
       <main className="dashboard-main">
         <div className="dashboard-banner" style={{background:'linear-gradient(135deg, rgba(108,59,255,0.15), rgba(255,107,107,0.1))',padding:18,borderRadius:12,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
           <div>
-            <h2 style={{margin:0}}>Bonjour Massylia ! 👋</h2>
-            <p style={{margin:0,color:'var(--muted)'}}>Vous avez 3 nouveaux matchs et 2 sessions cette semaine.</p>
+            <h2 style={{margin:0}}>Bonjour {user?.firstName || user?.email || 'utilisateur'} ! 👋</h2>
+            <p style={{margin:0,color:'var(--muted)'}}>Vous avez {matches.length} matchs disponibles et pouvez créer des sessions en temps réel.</p>
           </div>
           <div style={{display:'flex',gap:8}}>
             <button onClick={()=>setNewSessionOpen(true)} className="btn-secondary">➕ Nouvelle session</button>
@@ -86,8 +90,12 @@ export default function Dashboard(){
             <div style={{background:'var(--card)',padding:16,borderRadius:12}}>
               <h3>Mes compétences</h3>
               <div style={{marginTop:8}}>
-                <div style={{display:'flex',justifyContent:'space-between'}}><span>Python</span><span style={{color:'#00D4AA'}}>Expert</span></div>
-                <div style={{height:8,background:'rgba(255,255,255,0.04)',borderRadius:8,marginTop:6}}><div style={{width:'90%',height:'100%',background:'var(--gradient)',borderRadius:8}}></div></div>
+                {(user?.skills || []).length ? (user.skills || []).map((skill) => (
+                  <div key={skill.name || skill} style={{marginBottom:10}}>
+                    <div style={{display:'flex',justifyContent:'space-between'}}><span>{skill.name || skill}</span><span style={{color:'#00D4AA'}}>Actif</span></div>
+                    <div style={{height:8,background:'rgba(255,255,255,0.04)',borderRadius:8,marginTop:6}}><div style={{width:'70%',height:'100%',background:'var(--gradient)',borderRadius:8}}></div></div>
+                  </div>
+                )) : <p style={{ color: 'var(--muted)', margin: 0 }}>Ajoutez vos compétences depuis votre profil pour les voir apparaître ici.</p>}
               </div>
             </div>
           </div>

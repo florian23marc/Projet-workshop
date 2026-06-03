@@ -15,7 +15,7 @@ export default function Register() {
     const res = await fetch('/inscription', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prenom, nom, email, etablissement, password }),
+      body: JSON.stringify({ firstName: prenom, lastName: nom, email, password }),
       credentials: 'include'
     })
 
