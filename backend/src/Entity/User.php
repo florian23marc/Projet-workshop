@@ -35,9 +35,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinTable(name: 'user_skills')]
     private $skills;
 
+    #[ORM\ManyToMany(targetEntity: Skill::class)]
+    #[ORM\JoinTable(name: 'user_teach_skills')]
+    private $teachSkills;
+
+    #[ORM\ManyToMany(targetEntity: Skill::class)]
+    #[ORM\JoinTable(name: 'user_learn_skills')]
+    private $learnSkills;
+
     public function __construct()
     {
         $this->skills = new ArrayCollection();
+        $this->teachSkills = new ArrayCollection();
+        $this->learnSkills = new ArrayCollection();
     }
 
     public function getId(): ?int { return $this->id; }
@@ -59,4 +69,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getSkills(): Collection { return $this->skills; }
     public function addSkill(Skill $s): self { if (!$this->skills->contains($s)) $this->skills->add($s); return $this; }
     public function removeSkill(Skill $s): self { $this->skills->removeElement($s); return $this; }
+
+    /** @return Collection|Skill[] */
+    public function getTeachSkills(): Collection { return $this->teachSkills; }
+    public function addTeachSkill(Skill $s): self { if (!$this->teachSkills->contains($s)) $this->teachSkills->add($s); return $this; }
+    public function removeTeachSkill(Skill $s): self { $this->teachSkills->removeElement($s); return $this; }
+
+    /** @return Collection|Skill[] */
+    public function getLearnSkills(): Collection { return $this->learnSkills; }
+    public function addLearnSkill(Skill $s): self { if (!$this->learnSkills->contains($s)) $this->learnSkills->add($s); return $this; }
+    public function removeLearnSkill(Skill $s): self { $this->learnSkills->removeElement($s); return $this; }
 }

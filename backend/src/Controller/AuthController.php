@@ -87,6 +87,12 @@ class AuthController extends AbstractController
         ]);
     }
 
+    #[Route('/deconnexion', name: 'deconnexion')]
+    public function logout(): never
+    {
+        throw new \LogicException('Intercepté par le firewall de sécurité.');
+    }
+
     #[Route('/profil', name: 'profil', methods: ['GET'])]
     public function profile(): Response
     {
