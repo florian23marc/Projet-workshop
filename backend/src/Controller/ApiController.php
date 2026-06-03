@@ -6,7 +6,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Match as MatchEntity;
+use App\Entity\MatchEntity;
 
 class ApiController extends AbstractController
 {
