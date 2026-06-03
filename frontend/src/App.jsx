@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -15,6 +15,16 @@ export default function App() {
     return localStorage.getItem('theme') || 'dark'
   })
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const navigate = useNavigate()
+
+  const closeMenu = () => setMenuOpen(false)
+
+  const handleLogout = async () => {
+    await fetch('/deconnexion', { credentials: 'include', redirect: 'manual' })
+    setIsLoggedIn(false)
+    navigate('/connexion')
+  }
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -33,23 +43,40 @@ export default function App() {
 
   return (
     <div>
-      <nav className="topnav">
-        <Link to="/" className="nav-logo">
+      <nav className={`topnav${menuOpen ? ' menu-open' : ''}`}>
+        <Link to="/" className="nav-logo" onClick={closeMenu}>
           <img src="/logo.svg" alt="SkillSwap logo" />
         </Link>
-        <div className="topnav-links">
-          <Link to="/">Home</Link>
-          {isLoggedIn && <Link to="/recherche">Rechercher</Link>}
-          {isLoggedIn && <Link to="/matching">Matchs</Link>}
-          {isLoggedIn && <Link to="/dashboard">Dashboard</Link>}
-          {isLoggedIn && <Link to="/sessions">Sessions</Link>}
-          {!isLoggedIn && <Link to="/connexion">Se connecter</Link>}
-          {!isLoggedIn && <Link to="/inscription">S'inscrire</Link>}
-          {isLoggedIn && <a href="/deconnexion" style={{ color: 'var(--muted)' }}>Déconnexion</a>}
-        </div>
-        <button className="theme-toggle" onClick={toggleTheme}>
-          {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+        <button
+          className="burger-btn"
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-label="Menu"
+          aria-expanded={menuOpen}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
         </button>
+        <div className="topnav-links">
+          <Link to="/" onClick={closeMenu}>Home</Link>
+          {isLoggedIn && <Link to="/recherche" onClick={closeMenu}>Rechercher</Link>}
+          {isLoggedIn && <Link to="/matching" onClick={closeMenu}>Correspondances</Link>}
+          {isLoggedIn && <Link to="/dashboard" onClick={closeMenu}>Tableau de bord</Link>}
+          {isLoggedIn && <Link to="/sessions" onClick={closeMenu}>Sessions</Link>}
+          {!isLoggedIn && <Link to="/connexion" onClick={closeMenu}>Se connecter</Link>}
+          {!isLoggedIn && <Link to="/inscription" onClick={closeMenu}>S'inscrire</Link>}
+          {isLoggedIn && (
+            <button
+              onClick={() => { handleLogout(); closeMenu() }}
+              style={{ color: 'var(--muted)', background: 'none', border: 'none', cursor: 'pointer', font: 'inherit', padding: 0 }}
+            >
+              Déconnexion
+            </button>
+          )}
+          <button className="theme-toggle" onClick={toggleTheme}>
+            {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          </button>
+        </div>
       </nav>
       <main>
         <Routes>

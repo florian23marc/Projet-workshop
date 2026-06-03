@@ -27,21 +27,57 @@ export default function Matching() {
   const learnCount = skillMatches.canLearnFrom?.length || 0
   const teachCount = skillMatches.canTeach?.length || 0
 
+  const color = view === 'learn' ? '#6C3BFF' : '#00D4AA'
+  const colorBg = view === 'learn' ? 'rgba(108,59,255,0.12)' : 'rgba(0,212,170,0.12)'
+  const colorBorder = view === 'learn' ? 'rgba(108,59,255,0.35)' : 'rgba(0,212,170,0.35)'
+
   return (
     <div className="matching-page">
-      <h1>Mes Matchs ✨</h1>
-      <p style={{ color: 'var(--muted)' }}>Étudiants compatibles avec vos compétences</p>
+      <div className="matching-hero">
+        <span className="hero-badge">✦ Algorithme de matching</span>
+        <h1 className="matching-title">
+          Mes <span className="gradient-text">Matchs</span>
+        </h1>
+        <p className="matching-subtitle">
+          Des étudiants sélectionnés selon vos compétences déclarées
+        </p>
+        <div className="matching-stats-row">
+          <div className="matching-stat">
+            <span className="matching-stat-num" style={{ color: '#6C3BFF' }}>{learnCount}</span>
+            <span className="matching-stat-label">peuvent vous former</span>
+          </div>
+          <div className="matching-stat-divider" />
+          <div className="matching-stat">
+            <span className="matching-stat-num" style={{ color: '#00D4AA' }}>{teachCount}</span>
+            <span className="matching-stat-label">à former</span>
+          </div>
+        </div>
+      </div>
 
-      <div className="match-view-toggle">
-        <button className={view === 'learn' ? 'active' : ''} onClick={() => setView('learn')}>
-          Ils peuvent me former {learnCount > 0 && <span style={{ marginLeft: 6, fontSize: 11, opacity: 0.75 }}>({learnCount})</span>}
+      <div className="match-tabs">
+        <button
+          className={`match-tab${view === 'learn' ? ' active learn' : ''}`}
+          onClick={() => setView('learn')}
+        >
+          <span className="match-tab-icon">📚</span>
+          <span className="match-tab-body">
+            <span className="match-tab-label">Ils peuvent me former</span>
+            <span className="match-tab-count">{learnCount} match{learnCount !== 1 ? 's' : ''}</span>
+          </span>
         </button>
-        <button className={view === 'teach' ? 'active' : ''} onClick={() => setView('teach')}>
-          Je peux former {teachCount > 0 && <span style={{ marginLeft: 6, fontSize: 11, opacity: 0.75 }}>({teachCount})</span>}
+        <button
+          className={`match-tab${view === 'teach' ? ' active teach' : ''}`}
+          onClick={() => setView('teach')}
+        >
+          <span className="match-tab-icon">💪</span>
+          <span className="match-tab-body">
+            <span className="match-tab-label">Je peux former</span>
+            <span className="match-tab-count">{teachCount} match{teachCount !== 1 ? 's' : ''}</span>
+          </span>
         </button>
       </div>
 
-      <div style={{ marginTop: 18 }}>
+      <div style={{ marginTop: 8 }}>
         {loading && (
           <p style={{ color: 'var(--muted)', textAlign: 'center', marginTop: 40 }}>Chargement…</p>
         )}
@@ -71,45 +107,43 @@ export default function Matching() {
 
         {visibleMatches.map((m, i) => (
           <div key={i} className="match-card">
-            <div className="match-avatar">
-              <div style={{
-                width: 48, height: 48, borderRadius: '50%', display: 'flex',
-                alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 16,
-                background: view === 'learn' ? 'rgba(108,59,255,0.2)' : 'rgba(0,212,170,0.2)',
-                color: view === 'learn' ? '#6C3BFF' : '#00D4AA',
-              }}>
-                {initials(m.name)}
-              </div>
+            {/* Avatar */}
+            <div className="match-avatar" style={{
+              background: colorBg,
+              color: color,
+              border: `2px solid ${colorBorder}`,
+            }}>
+              {initials(m.name)}
             </div>
+
+            {/* Main info */}
             <div className="match-info">
               <div className="match-headline">
                 <h3>{m.name}</h3>
-                <span>🏫 DSP Paris · ⭐ 4.8</span>
+                <span className="match-meta">🏫 DSP Paris · ⭐ 4.8</span>
               </div>
-              <div className="match-badges">
-                <span className="pill pill-primary">
-                  {view === 'learn' ? 'Il maîtrise' : 'Il veut apprendre'} : {m.skills.join(', ')}
-                </span>
+
+              <div className="match-skills">
+                {m.skills.map((s, si) => (
+                  <span key={si} className="skill-chip" style={{ borderColor: colorBorder, color }}>
+                    {s}
+                  </span>
+                ))}
               </div>
-            </div>
-            <div className="match-role-card">
-              <div className="match-role-title">
-                {view === 'learn' ? 'Peut me former' : 'Je peux former'}
-              </div>
-              <div className="match-role-note">
-                {view === 'learn'
-                  ? `Ce profil maîtrise ${m.skills.slice(0, 2).join(', ')}${m.skills.length > 2 ? '…' : ''} et peut vous accompagner.`
-                  : `Ce profil veut apprendre ${m.skills.slice(0, 2).join(', ')}${m.skills.length > 2 ? '…' : ''}.`}
+
+              <div className="match-role-label" style={{ color }}>
+                {view === 'learn' ? 'Peut vous former' : 'Veut apprendre avec vous'}
               </div>
             </div>
-            <div className="match-score-card">
-              <div className="match-score-circle">
-                <div style={{ color: view === 'learn' ? '#6C3BFF' : '#00D4AA' }}>{m.match}%</div>
+
+            {/* Score + Actions */}
+            <div className="match-actions">
+              <div className="match-score-block" style={{ background: colorBg, borderColor: colorBorder }}>
+                <span className="match-score-number" style={{ color }}>{m.match}%</span>
+                <span className="match-score-label">compatible</span>
               </div>
-              <div className="match-actions">
-                <button className="btn-primary">Proposer une session</button>
-                <button className="btn-secondary">Voir le profil</button>
-              </div>
+              <button className="btn-primary">Proposer une session</button>
+              <button className="btn-ghost">Voir le profil</button>
             </div>
           </div>
         ))}

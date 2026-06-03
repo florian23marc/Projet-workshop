@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillSwap — Mes Sessions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .sessions-tabs { display:flex; gap:4px; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:12px; padding:4px; margin-bottom:28px; width:fit-content; }
+    .tab-btn { padding:8px 20px; border-radius:9px; border:none; background:none; color:var(--muted); font-family:'Satoshi',sans-serif; font-size:0.88rem; font-weight:500; cursor:pointer; transition:all 0.2s; }
+    .tab-btn.active { background:var(--gradient); color:white; }
+
+    .sessions-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px; }
+    .sessions-stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; text-align:center; }
+    .sessions-stat-card .n { font-family:'Clash Display',sans-serif; font-size:2rem; font-weight:700; }
+    .sessions-stat-card .l { font-size:0.82rem; color:var(--muted); margin-top:4px; }
+
+    .sessions-layout { display:grid; grid-template-columns:1fr 300px; gap:24px; }
+
+    .session-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:14px; transition:all 0.25s; }
+    .session-card:hover { border-color:rgba(108,59,255,0.3); transform:translateY(-1px); }
+    .session-card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
+    .session-card-header h3 { font-size:1rem; font-weight:600; margin-bottom:4px; }
+    .session-card-meta { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+    .session-card-meta span { display:flex; align-items:center; gap:5px; font-size:0.8rem; color:var(--muted); }
+    .session-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+    .session-tag { padding:3px 10px; background:rgba(108,59,255,0.1); color:#A889FF; border:1px solid rgba(108,59,255,0.2); border-radius:50px; font-size:0.75rem; }
+    .session-footer { display:flex; justify-content:space-between; align-items:center; }
+    .session-organizer { display:flex; align-items:center; gap:8px; font-size:0.82rem; color:var(--muted); }
+    .session-actions { display:flex; gap:8px; }
+
+    .calendar-view .date-group { margin-bottom:24px; }
+    .calendar-date-label { font-size:0.78rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+    .calendar-session-item { display:flex; align-items:center; gap:14px; padding:12px 16px; background:var(--card); border:1px solid var(--border); border-radius:12px; margin-bottom:8px; }
+    .calendar-time { font-family:'Clash Display',sans-serif; font-size:0.9rem; font-weight:700; color:var(--primary); min-width:44px; }
+    .calendar-info { flex:1; }
+    .calendar-info h4 { font-size:0.9rem; font-weight:600; margin-bottom:2px; }
+    .calendar-info p { font-size:0.78rem; color:var(--muted); }
+
+    .invite-card { background:var(--card); border:1px solid rgba(255,193,7,0.25); border-radius:14px; padding:18px; margin-bottom:12px; }
+    .invite-card h4 { font-size:0.9rem; font-weight:600; margin-bottom:6px; }
+    .invite-card p { font-size:0.8rem; color:var(--muted); margin-bottom:14px; line-height:1.5; }
+    .invite-actions { display:flex; gap:8px; }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <a href="index.html" class="logo">SkillSwap</a>
+    <span class="nav-section">Principal</span>
+    <a href="dashboard.html" class="nav-item"><span class="icon">🏠</span> Tableau de bord</a>
+    <a href="recherche.html" class="nav-item"><span class="icon">🔍</span> Rechercher</a>
+    <a href="matching.html" class="nav-item"><span class="icon">✨</span> Mes Matchs <span class="nav-badge">3</span></a>
+    <span class="nav-section">Apprentissage</span>
+    <a href="sessions.html" class="nav-item active"><span class="icon">📅</span> Mes Sessions</a>
+    <a href="messages.html" class="nav-item"><span class="icon">💬</span> Messages <span class="nav-badge">5</span></a>
+    <span class="nav-section">Communauté</span>
+    <a href="feed.html" class="nav-item"><span class="icon">📱</span> Feed Social</a>
+    <a href="gamification.html" class="nav-item"><span class="icon">🏆</span> Badges & Points</a>
+    <span class="nav-section">Mon compte</span>
+    <a href="profil.html" class="nav-item"><span class="icon">👤</span> Mon Profil</a>
+    <a href="parametres.html" class="nav-item"><span class="icon">⚙️</span> Paramètres</a>
+    <div class="sidebar-user">
+      <div class="user-avatar">👩‍💻</div>
+      <div class="user-info"><strong>Massylia S.</strong><span>DSP Paris</span></div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="flex-between mb-24">
+      <div class="page-header" style="margin-bottom:0">
+        <h1>Mes Sessions 📅</h1>
+        <p>Gérez vos ateliers et cours d'échange</p>
+      </div>
+      <button class="btn btn-primary">+ Créer une session</button>
+    </div>
+
+    <!-- STATS -->
+    <div class="sessions-stats">
+      <div class="sessions-stat-card">
+        <div class="n" style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent">5</div>
+        <div class="l">Sessions à venir</div>
+      </div>
+      <div class="sessions-stat-card">
+        <div class="n" style="color:var(--accent)">12</div>
+        <div class="l">Sessions passées</div>
+      </div>
+      <div class="sessions-stat-card">
+        <div class="n" style="color:#FFC107">2</div>
+        <div class="l">Invitations en attente</div>
+      </div>
+    </div>
+
+    <!-- TABS + VIEW -->
+    <div class="flex-between mb-16">
+      <div class="sessions-tabs">
+        <button class="tab-btn active">À venir</button>
+        <button class="tab-btn">Passées</button>
+        <button class="tab-btn">📅 Calendrier</button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm">🔽 Filtrer</button>
+        <button class="btn btn-secondary btn-sm">⬇ Exporter</button>
+      </div>
+    </div>
+
+    <div class="sessions-layout">
+
+      <!-- SESSION LIST -->
+      <div>
+
+        <div class="session-card">
+          <div class="session-card-header">
+            <div>
+              <h3>Session Python avancé</h3>
+              <span class="badge badge-success">📅 Mardi 3 Juin</span>
+            </div>
+            <span class="badge badge-primary">Organisateur</span>
+          </div>
+          <div class="session-card-meta">
+            <span>🕐 14h00 – 15h30</span>
+            <span>📍 En ligne (Google Meet)</span>
+            <span>👥 3 / 5 participants</span>
+            <span>⏱ 1h30</span>
+          </div>
+          <div class="session-tags">
+            <span class="session-tag">Python</span>
+            <span class="session-tag">Data Science</span>
+            <span class="session-tag">Pandas</span>
+          </div>
+          <div class="session-footer">
+            <div class="session-organizer">
+              <div class="avatar-sm">👨‍💻</div>
+              <span>avec Lucas Martin</span>
+            </div>
+            <div class="session-actions">
+              <button class="btn btn-secondary btn-sm">Détails</button>
+              <button class="btn btn-primary btn-sm">Rejoindre →</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="session-card">
+          <div class="session-card-header">
+            <div>
+              <h3>Atelier Figma — UI Components</h3>
+              <span class="badge badge-success">📅 Jeudi 5 Juin</span>
+            </div>
+            <span class="badge badge-warning">Participant</span>
+          </div>
+          <div class="session-card-meta">
+            <span>🕐 10h00 – 12h00</span>
+            <span>📍 Campus — Salle B204</span>
+            <span>👥 8 / 10 participants</span>
+            <span>⏱ 2h</span>
+          </div>
+          <div class="session-tags">
+            <span class="session-tag">Figma</span>
+            <span class="session-tag">UI/UX</span>
+            <span class="session-tag">Design System</span>
+          </div>
+          <div class="session-footer">
+            <div class="session-organizer">
+              <div class="avatar-sm">👩‍🎨</div>
+              <span>animé par Emma Renard</span>
+            </div>
+            <div class="session-actions">
+              <button class="btn btn-secondary btn-sm">Détails</button>
+              <button class="btn btn-danger btn-sm">Quitter</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="session-card">
+          <div class="session-card-header">
+            <div>
+              <h3>Cours d'Anglais Business</h3>
+              <span class="badge badge-success">📅 Dimanche 8 Juin</span>
+            </div>
+            <span class="badge badge-primary">Organisateur</span>
+          </div>
+          <div class="session-card-meta">
+            <span>🕐 16h30 – 18h00</span>
+            <span>📍 En ligne (Discord)</span>
+            <span>👥 2 / 4 participants</span>
+            <span>⏱ 1h30</span>
+          </div>
+          <div class="session-tags">
+            <span class="session-tag">Anglais</span>
+            <span class="session-tag">Business</span>
+            <span class="session-tag">Oral</span>
+          </div>
+          <div class="session-footer">
+            <div class="session-organizer">
+              <div class="avatar-sm">👨‍🎓</div>
+              <span>avec Tom Bernard</span>
+            </div>
+            <div class="session-actions">
+              <button class="btn btn-secondary btn-sm">Modifier</button>
+              <button class="btn btn-primary btn-sm">Inviter</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: INVITATIONS -->
+      <div>
+        <div class="card">
+          <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:16px">Invitations en attente 📩</h3>
+
+          <div class="invite-card">
+            <h4>Workshop React Hooks</h4>
+            <p>Invité par <strong style="color:var(--text)">Léa Dupont</strong><br>📅 Vendredi 6 Juin · 14h00<br>📍 En ligne · 2h</p>
+            <div class="invite-actions">
+              <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center">Accepter ✓</button>
+              <button class="btn btn-secondary btn-sm" style="flex:1;justify-content:center">Refuser</button>
+            </div>
+          </div>
+
+          <div class="invite-card">
+            <h4>Session Excel & Power BI</h4>
+            <p>Invité par <strong style="color:var(--text)">Clara Simon</strong><br>📅 Samedi 7 Juin · 10h00<br>📍 Campus · 1h30</p>
+            <div class="invite-actions">
+              <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center">Accepter ✓</button>
+              <button class="btn btn-secondary btn-sm" style="flex:1;justify-content:center">Refuser</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:16px">Sessions passées récentes</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,0.02);border-radius:10px;border:1px solid var(--border)">
+              <div class="avatar-sm">👩‍🎓</div>
+              <div style="flex:1">
+                <div style="font-size:0.85rem;font-weight:500">Intro au Machine Learning</div>
+                <div style="font-size:0.75rem;color:var(--muted)">28 Mai · 2h</div>
+              </div>
+              <span class="badge badge-success">⭐ 5.0</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,0.02);border-radius:10px;border:1px solid var(--border)">
+              <div class="avatar-sm">👨‍💻</div>
+              <div style="flex:1">
+                <div style="font-size:0.85rem;font-weight:500">JavaScript ES6+</div>
+                <div style="font-size:0.75rem;color:var(--muted)">24 Mai · 1h</div>
+              </div>
+              <span class="badge badge-success">⭐ 4.8</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,0.02);border-radius:10px;border:1px solid var(--border)">
+              <div class="avatar-sm">👩‍🎨</div>
+              <div style="flex:1">
+                <div style="font-size:0.85rem;font-weight:500">Prototypage Figma</div>
+                <div style="font-size:0.75rem;color:var(--muted)">20 Mai · 2h</div>
+              </div>
+              <span class="badge badge-success">⭐ 5.0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

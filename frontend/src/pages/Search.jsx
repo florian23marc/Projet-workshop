@@ -1,43 +1,130 @@
 import React, { useEffect, useState } from 'react'
 
-export default function Search(){
-  const [q,setQ] = useState('Python')
-  const [results,setResults] = useState([])
-  useEffect(()=>{ fetch('/api/search?q='+encodeURIComponent(q), { credentials: 'include' }).then(r=>r.json()).then(d=>setResults(d.results||[])) },[q])
+function initials(name) {
+  if (!name) return '?'
+  const parts = name.trim().split(/\s+/)
+  return parts.length >= 2
+    ? (parts[0][0] + parts[1][0]).toUpperCase()
+    : name.slice(0, 2).toUpperCase()
+}
+
+const FILTERS = [
+  { id: 'all', label: 'Tous', icon: '✦' },
+  { id: 'tech', label: 'Tech & Dev', icon: '💻' },
+  { id: 'design', label: 'Design & Créa', icon: '🎨' },
+  { id: 'business', label: 'Business', icon: '📊' },
+]
+
+export default function Search() {
+  const [inputValue, setInputValue] = useState('Python')
+  const [activeFilter, setActiveFilter] = useState('all')
+  const [results, setResults] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  const doSearch = (term = inputValue) => {
+    setLoading(true)
+    fetch('/api/search?q=' + encodeURIComponent(term), { credentials: 'include' })
+      .then(r => r.json())
+      .then(d => { setResults(d.results || []); setLoading(false) })
+      .catch(() => setLoading(false))
+  }
+
+  useEffect(() => { doSearch('Python') }, [])
+
+  const handleKey = (e) => { if (e.key === 'Enter') doSearch() }
+
   return (
-    <div style={{padding:24}}>
-      <h1>Rechercher 🔍</h1>
-      <p style={{color:'var(--muted)'}}>Trouvez l'étudiant parfait pour échanger vos compétences</p>
+    <div className="search-page">
 
-      <div style={{display:'flex',gap:12,marginTop:16,marginBottom:12}}>
-        <input value={q} onChange={e=>setQ(e.target.value)} style={{flex:1}} />
-        <button className="btn-primary" onClick={()=>{}}>Rechercher</button>
+      {/* ── Hero ── */}
+      <div className="search-hero">
+        <span className="hero-badge">✦ Base étudiants DSP Paris</span>
+        <h1 className="search-title">
+          Trouver un <span className="gradient-text">partenaire</span>
+        </h1>
+        <p className="search-subtitle">
+          Recherchez par compétence, prénom ou domaine pour trouver le bon binôme
+        </p>
       </div>
 
-      <div style={{display:'flex',gap:12,flexWrap:'wrap',marginBottom:12}}>
-        <button className="filter-btn" style={{background:'rgba(108,59,255,0.06)',border:'1px solid var(--border)'}}>🌟 Tous</button>
-        <button className="filter-btn">💻 Tech & Dev</button>
-        <button className="filter-btn">🎨 Design & Créa</button>
+      {/* ── Search bar ── */}
+      <div className="search-bar-wrapper">
+        <div className="search-bar">
+          <span className="search-icon">🔍</span>
+          <input
+            className="search-input"
+            value={inputValue}
+            onChange={e => setInputValue(e.target.value)}
+            onKeyDown={handleKey}
+            placeholder="Python, Figma, React, Leadership…"
+          />
+          {inputValue && (
+            <button className="search-clear" onClick={() => { setInputValue(''); setResults([]) }}>✕</button>
+          )}
+        </div>
+        <button className="btn-primary search-submit" onClick={() => doSearch()}>
+          Rechercher
+        </button>
       </div>
 
-      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(300px,1fr))',gap:16}}>
-        {results.map((r,i)=>(
-          <div key={i} style={{background:'var(--card)',padding:16,borderRadius:12}}>
-            <div style={{display:'flex',alignItems:'center',gap:12}}>
-              <div style={{fontSize:28}}>👤</div>
-              <div style={{flex:1}}>
-                <h3 style={{margin:0}}>{r.name}</h3>
-                <div style={{color:'var(--muted)',fontSize:12}}>🏫 DSP Paris · ⭐ 4.8</div>
+      {/* ── Filters ── */}
+      <div className="filter-chips">
+        {FILTERS.map(f => (
+          <button
+            key={f.id}
+            className={`filter-chip${activeFilter === f.id ? ' active' : ''}`}
+            onClick={() => setActiveFilter(f.id)}
+          >
+            <span>{f.icon}</span>
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Results ── */}
+      <div className="search-results">
+        {loading && (
+          <p style={{ color: 'var(--muted)', textAlign: 'center', marginTop: 40 }}>Recherche…</p>
+        )}
+
+        {!loading && results.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '48px 24px', color: 'var(--muted)', border: '1px dashed var(--border)', borderRadius: 16 }}>
+            <div style={{ fontSize: 36, marginBottom: 12 }}>🔎</div>
+            <p style={{ margin: 0, fontSize: 15 }}>Aucun résultat. Essayez un autre terme.</p>
+          </div>
+        )}
+
+        {!loading && results.map((r, i) => (
+          <div key={i} className="match-card">
+            <div className="match-avatar" style={{
+              background: 'rgba(108,59,255,0.12)',
+              color: '#6C3BFF',
+              border: '2px solid rgba(108,59,255,0.3)',
+            }}>
+              {initials(r.name)}
+            </div>
+
+            <div className="match-info">
+              <div className="match-headline">
+                <h3>{r.name}</h3>
+                <span className="match-meta">🏫 DSP Paris · ⭐ 4.8</span>
               </div>
-              <div style={{fontFamily:'Clash Display',fontSize:18,fontWeight:700,color:'var(--accent)'}}>{r.match}%</div>
+              <div className="match-skills">
+                <span className="skill-chip search-offer-chip">✅ Offre</span>
+                <span className="skill-chip search-want-chip">🔍 Cherche</span>
+              </div>
             </div>
-            <div style={{marginTop:12,display:'flex',gap:8,flexWrap:'wrap'}}>
-              <span style={{padding:'6px 10px',borderRadius:20,background:'rgba(0,212,170,0.08)'}}>✅ Offer</span>
-              <span style={{padding:'6px 10px',borderRadius:20,background:'rgba(255,107,107,0.08)'}}>🔍 Want</span>
-            </div>
-            <div style={{display:'flex',gap:8,marginTop:12}}>
-              <a href="/profil-etudiant.html" className="btn-secondary" style={{flex:1,background:'transparent',border:'1px solid var(--border)',color:'var(--muted)'}}>Voir profil</a>
-              <button className="btn-primary" style={{flex:1}}>Proposer ✨</button>
+
+            <div className="match-actions">
+              <div className="match-score-block" style={{
+                background: 'rgba(108,59,255,0.09)',
+                borderColor: 'rgba(108,59,255,0.3)',
+              }}>
+                <span className="match-score-number" style={{ color: '#6C3BFF' }}>{r.match}%</span>
+                <span className="match-score-label">compatible</span>
+              </div>
+              <button className="btn-primary">Proposer ✨</button>
+              <button className="btn-ghost">Voir le profil</button>
             </div>
           </div>
         ))}

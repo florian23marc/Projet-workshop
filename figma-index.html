@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillSwap — Index des maquettes Figma</title>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6C3BFF;
+      --secondary: #FF6B6B;
+      --accent: #00D4AA;
+      --dark: #0A0A0F;
+      --dark2: #12121A;
+      --card: #1A1A2E;
+      --border: rgba(255,255,255,0.08);
+      --text: #E8E8F0;
+      --muted: #8888AA;
+      --gradient: linear-gradient(135deg, #6C3BFF 0%, #FF6B6B 100%);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Satoshi',sans-serif; background:var(--dark); color:var(--text); min-height:100vh; padding:60px; }
+    h1 { font-family:'Clash Display',sans-serif; font-size:2.5rem; font-weight:700; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
+    .subtitle { color:var(--muted); font-size:1rem; margin-bottom:48px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; }
+    .page-card { background:var(--card); border:1px solid var(--border); border-radius:20px; overflow:hidden; text-decoration:none; color:inherit; transition:all 0.25s; display:block; }
+    .page-card:hover { transform:translateY(-4px); border-color:rgba(108,59,255,0.4); box-shadow:0 12px 40px rgba(0,0,0,0.3); }
+    .card-preview { height:160px; display:flex; align-items:center; justify-content:center; font-size:4rem; position:relative; overflow:hidden; }
+    .card-body { padding:20px; }
+    .card-body h3 { font-family:'Clash Display',sans-serif; font-size:1.1rem; font-weight:600; margin-bottom:6px; }
+    .card-body p { font-size:0.82rem; color:var(--muted); line-height:1.5; margin-bottom:14px; }
+    .card-tags { display:flex; flex-wrap:wrap; gap:6px; }
+    .tag { padding:3px 10px; background:rgba(108,59,255,0.1); color:#A889FF; border:1px solid rgba(108,59,255,0.2); border-radius:50px; font-size:0.72rem; }
+    .tag-public { background:rgba(0,212,170,0.1); color:#00D4AA; border-color:rgba(0,212,170,0.2); }
+    .tag-protected { background:rgba(255,107,107,0.1); color:#FF6B6B; border-color:rgba(255,107,107,0.2); }
+    .section-label { font-size:0.75rem; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; margin-top:40px; }
+    .section-label:first-of-type { margin-top:0; }
+  </style>
+</head>
+<body>
+  <h1>SkillSwap — Maquettes</h1>
+  <p class="subtitle">Toutes les pages du projet · Cliquez pour ouvrir · Importez chacune dans Figma via html.to.design</p>
+
+  <p class="section-label">Pages publiques</p>
+  <div class="grid">
+
+    <a href="index.html" class="page-card">
+      <div class="card-preview" style="background:linear-gradient(135deg,rgba(108,59,255,0.2),rgba(255,107,107,0.1))">🏠</div>
+      <div class="card-body">
+        <h3>Landing Page</h3>
+        <p>Page d'accueil avec hero, statistiques, fonctionnalités et étapes "Comment ça marche".</p>
+        <div class="card-tags">
+          <span class="tag tag-public">Public</span>
+          <span class="tag">Route : /</span>
+          <span class="tag">index.html</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="connexion.html" class="page-card">
+      <div class="card-preview" style="background:linear-gradient(135deg,rgba(108,59,255,0.15),rgba(0,212,170,0.08))">🔐</div>
+      <div class="card-body">
+        <h3>Connexion</h3>
+        <p>Formulaire login 2 panneaux : gauche (stats + activité récente), droite (email + mot de passe).</p>
+        <div class="card-tags">
+          <span class="tag tag-public">Public</span>
+          <span class="tag">Route : /connexion</span>
+          <span class="tag">connexion.html</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="inscription.html" class="page-card">
+      <div class="card-preview" style="background:linear-gradient(135deg,rgba(0,212,170,0.15),rgba(108,59,255,0.08))">✍️</div>
+      <div class="card-body">
+        <h3>Inscription</h3>
+        <p>Formulaire 2 panneaux : gauche (témoignage + compétences populaires), droite (champs + compétences).</p>
+        <div class="card-tags">
+          <span class="tag tag-public">Public</span>
+          <span class="tag">Route : /inscription</span>
+          <span class="tag">inscription.html</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <p class="section-label">Pages protégées (connecté)</p>
+  <div class="grid">
+
+    <a href="dashboard.html" class="page-card">
+      <div class="card-preview" style="background:linear-gradient(135deg,rgba(108,59,255,0.18),rgba(255,107,107,0.08))">📊</div>
+      <div class="card-body">
+        <h3>Tableau de bord</h3>
+        <p>Vue principale : stats, sessions à venir, compétences, matchs récents, badges et progression.</p>
+        <div class="card-tags">
+          <span class="tag tag-protected">Connecté</span>
+          <span class="tag">Route : /dashboard</span>
+          <span class="tag">dashboard.html</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="recherche.html" class="page-card">
+      <div class="card-preview" style="background:linear-gradient(135deg,rgba(0,212,170,0.18),rgba(108,59,255,0.08))">🔍</div>
+      <div class="card-body">
+        <h3>Recherche</h3>
+        <p>Moteur de recherche d'étudiants par compétences avec filtres par catégorie et tri, grille de cartes.</p>
+        <div class="card-tags">
+          <span class="tag tag-protected">Connecté</span>
+          <span class="tag">Route : /recherche</span>
+          <span class="tag">recherche.html</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="matching.html" class="page-card">
+      <div class="card-preview" style="background:linear-gradient(135deg,rgba(255,107,107,0.15),rgba(108,59,255,0.1))">✨</div>
+      <div class="card-body">
+        <h3>Mes Matchs</h3>
+        <p>Étudiants compatibles avec score de compatibilité, nouveaux matchs en surbrillance et matchs en attente.</p>
+        <div class="card-tags">
+          <span class="tag tag-protected">Connecté</span>
+          <span class="tag">Route : /matching</span>
+          <span class="tag">matching.html</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="sessions.html" class="page-card">
+      <div class="card-preview" style="background:linear-gradient(135deg,rgba(255,193,7,0.15),rgba(108,59,255,0.08))">📅</div>
+      <div class="card-body">
+        <h3>Mes Sessions</h3>
+        <p>Gestion des sessions à venir et passées, invitations en attente, onglets liste / calendrier.</p>
+        <div class="card-tags">
+          <span class="tag tag-protected">Connecté</span>
+          <span class="tag">Route : /sessions</span>
+          <span class="tag">sessions.html</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <p class="section-label" style="margin-top:48px">Guide d'import Figma</p>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:700px">
+    <h3 style="font-family:'Clash Display',sans-serif;font-size:1.1rem;margin-bottom:16px">Comment importer dans Figma</h3>
+    <ol style="list-style:none;display:flex;flex-direction:column;gap:12px">
+      <li style="display:flex;gap:14px;align-items:flex-start">
+        <span style="background:var(--gradient);color:white;font-weight:700;font-size:0.8rem;padding:3px 9px;border-radius:50px;flex-shrink:0">1</span>
+        <span style="font-size:0.9rem;color:var(--muted)">Installez le plugin <strong style="color:var(--text)">html.to.design</strong> dans Figma (Figma Community)</span>
+      </li>
+      <li style="display:flex;gap:14px;align-items:flex-start">
+        <span style="background:var(--gradient);color:white;font-weight:700;font-size:0.8rem;padding:3px 9px;border-radius:50px;flex-shrink:0">2</span>
+        <span style="font-size:0.9rem;color:var(--muted)">Ouvrez chaque page HTML dans Chrome (ex: <code style="background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;font-size:0.82rem">file:///C:/Users/flori/Documents/Projet workshop/index.html</code>)</span>
+      </li>
+      <li style="display:flex;gap:14px;align-items:flex-start">
+        <span style="background:var(--gradient);color:white;font-weight:700;font-size:0.8rem;padding:3px 9px;border-radius:50px;flex-shrink:0">3</span>
+        <span style="font-size:0.9rem;color:var(--muted)">Lancez html.to.design depuis Figma et entrez l'URL locale ou utilisez l'extension Chrome pour capturer la page</span>
+      </li>
+      <li style="display:flex;gap:14px;align-items:flex-start">
+        <span style="background:var(--gradient);color:white;font-weight:700;font-size:0.8rem;padding:3px 9px;border-radius:50px;flex-shrink:0">4</span>
+        <span style="font-size:0.9rem;color:var(--muted)">Chaque page génère un frame Figma séparé. Renommez-les par ordre : 01-Home, 02-Login, etc.</span>
+      </li>
+    </ol>
+  </div>
+</body>
+</html>
