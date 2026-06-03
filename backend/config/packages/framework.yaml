@@ -8,6 +8,6 @@ framework:
         cookie_secure: auto
         cookie_samesite: lax
         cookie_httponly: true
-    csrf_protection: true
+    csrf_protection: false
     php_errors:
         log: true
